@@ -3,44 +3,113 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mygdx.game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  *
  * @author usuario
  */
 
-public class Cerveza {
-    public static final float SIZE = 64f;
+public class Cerveza extends ObjetoAtrapar {
 
-    private final Texture texture;
-    private final Rectangle rect;
-    private final float speed;
+    private Array<Rectangle> cervezasPos;   // posiciones de cada cerveza
+    private Array<Float> cervezasSpeed;     // velocidad individual
+    private long lastSpawnTime;             // tiempo para crear nuevas
+    private Texture texturaCerveza;         // textura compartida
 
     public Cerveza(Texture tex, float x, float y, float speed) {
-        this.texture = tex;
-        this.speed = speed;
-        this.rect = new Rectangle(x, y, SIZE, SIZE); // <-- rect de 64x64
+        super(tex, x, y, speed);
+        this.texturaCerveza = tex;
     }
 
-    public void update(float dt) { rect.y -= speed * dt; }
+    /** Inicializa las listas y genera la primera cerveza */
+    public void crear() {
+        cervezasPos = new Array<>();
+        cervezasSpeed = new Array<>();
+        crearCerveza();
+    }
 
+    /** Crea una nueva cerveza en una posición aleatoria arriba de la pantalla */
+    private void crearCerveza() {
+        Rectangle cerveza = new Rectangle();
+        cerveza.x = MathUtils.random(0, 800 - 64);
+        cerveza.y = 480 + MathUtils.random(0, 200);
+        cerveza.width = 64;
+        cerveza.height = 64;
+
+        cervezasPos.add(cerveza);
+        cervezasSpeed.add(MathUtils.random(280f, 400f)); // velocidad al caer
+        lastSpawnTime = TimeUtils.nanoTime();
+    }
+
+    /** Actualiza la caída de las cervezas y la detección con Homero */
+    public void actualizarMovimiento(Jugador homero) {
+        // cada medio segundo se crea una cerveza nueva
+        if (TimeUtils.nanoTime() - lastSpawnTime > 500_000_000L) crearCerveza();
+
+        for (int i = 0; i < cervezasPos.size; i++) {
+            Rectangle c = cervezasPos.get(i);
+            float speed = cervezasSpeed.get(i);
+
+            // caída
+            c.y -= speed * Gdx.graphics.getDeltaTime();
+
+            // si toca el suelo → reaparece arriba
+            if (c.y + c.height < 0) {
+                c.x = MathUtils.random(0, 800 - 64);
+                c.y = 480 + MathUtils.random(0, 200);
+                continue;
+            }
+
+            // si choca con Homero → sumar puntos y reaparecer
+            if (c.overlaps(homero.getArea())) {
+                homero.sumarPuntos(10);
+                c.x = MathUtils.random(0, 800 - 64);
+                c.y = 480 + MathUtils.random(0, 200);
+            }
+        }
+    }
+
+    /** Dibuja todas las cervezas activas */
+    @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, rect.x, rect.y, SIZE, SIZE); // <-- dibuja 64x64
+        for (Rectangle c : cervezasPos) {
+            batch.draw(texturaCerveza, c.x, c.y, c.width, c.height);
+        }
     }
 
-    public boolean fueraDePantalla() { return rect.y + rect.height < 0; }
+    @Override
+    public void update(float dt) {
+        // No se usa directamente: las cervezas se actualizan en actualizarMovimiento()
+    }
 
-    public Rectangle getArea() { return rect; }
+    @Override
+    public boolean fueraDePantalla() {
+        return rect.y + rect.height < 0;
+    }
 
-    // Respawn rápido arriba
+    @Override
+    public Rectangle getArea() {
+        return rect;
+    }
+
+    @Override
     public void reset(float x, float y) {
         rect.setPosition(x, y);
     }
 
-    public void dispose() { texture.dispose(); }
+    @Override
+    public void dispose() {
+        texturaCerveza.dispose();
+    }
 }
+
+
 
 

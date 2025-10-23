@@ -20,7 +20,13 @@ import com.badlogic.gdx.math.Rectangle;
 public class Jugador {
     private final Texture texture;
     private final Rectangle area = new Rectangle();
-    private float velx = 400f;
+    private final float velx = 400f;
+    
+    private int vidas = 3;
+    private int puntos = 0;
+    private boolean herido = false;
+    private float tHerido = 0f;
+    
     public Jugador(Texture tex) { this.texture = tex; }
 
     public void crear() {
@@ -28,21 +34,35 @@ public class Jugador {
 
     }
 
-    public void actualizar(float dt) {
+    public void actualizar(float dt) { //movimiento de homero
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  area.x -= velx * dt;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) area.x += velx * dt;
         area.x = MathUtils.clamp(area.x, 0, 800 - area.width);
+        
+        if(herido){
+            tHerido -=dt;
+            if(tHerido <= 0f) herido = false;
+        }
     }
 
     public void dibujar(SpriteBatch batch) {
-        float drawWidth = 64;
-        float drawHeight = 64;
+        float shake = herido ? MathUtils.random(-3, 3) : 0f;
         batch.draw(texture, area.x, area.y, area.width, area.height);
-
-
     }
+    
+    public void sumarPuntos(int pp) { puntos += pp; }
+    public void dañar() { 
+        vidas--; 
+        herido = true; 
+        tHerido = 0.4f; 
+    }
+    
+    public int getVidas() { return vidas; }
+    public int getPuntos() { return puntos; }
+    public boolean estaHerido() { return herido; }
+    
     public Rectangle getArea() { return area; }
-    public void dispose() { texture.dispose(); }
+    public void dispose() { texture.dispose(); } //libera memoria
 }
 
     
