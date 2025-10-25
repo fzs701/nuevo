@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.Screen;
+
 import com.badlogic.gdx.math.MathUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,131 +22,134 @@ import java.util.Random;
 //import puppy.code.Lluvia;
 //import puppy.code.Tarro;
 
-public class Ejemplo extends ApplicationAdapter {
-    
+
+
+public class Ejemplo implements Screen {
     private OrthographicCamera camera;
-    private SpriteBatch batch;	   
-    private BitmapFont font;   
-    //private Tarro tarro;
-    //private Lluvia lluvia;
+    private SpriteBatch batch;
+    private BitmapFont font;
     private Viewport viewport;
+    private Sound cervezaSound, aguaSound;
     
-    private final boolean modoHomero = true;   
-    private Jugador homero;             
-    private Cerveza cerveza;  
     
+    
+    private Sound donaSound;
+    private float factorVelocidad = 1f;
+
+
+
+    private Jugador homero;
+    private Cerveza cerveza;
+    private Dona dona;
+    private Agua agua;
+    private Texture fondo;
+
+    private final Pantalla game;
+
+    public Ejemplo(Pantalla game) {
+        this.game = game;
+    }
 
     @Override
-    public void create () {
-        font = new BitmapFont(); // use libGDX's default Arial font
-	
+    public void show() {
+        font = new BitmapFont();
         camera = new OrthographicCamera();
-        viewport = new FitViewport(800,480,camera);
-        camera.position.set(400,240,0);
+        viewport = new FitViewport(800, 480, camera);
+        camera.position.set(400, 240, 0);
         camera.update();
-        
         batch = new SpriteBatch();
-        
-        /*
-	// load the images for the droplet and the bucket, 64x64 pixels each 	     
-        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-        tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
-          
-	// load the drop sound effect and the rain background "music" 
-        //Texture gota = new Texture(Gdx.files.internal("drop.png"));
-        //Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-        Texture gota = new Texture(Gdx.files.internal("homero.jpg"));
-        Texture gotaMala = new Texture(Gdx.files.internal("homero.jpg"));
 
-        
-        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-         
-	Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
-	      
-        // camera
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-        batch = new SpriteBatch();
-        // creacion del tarro
-        tarro.crear();
-        // creacion de la lluvia
-        lluvia.crear(); */
-        
+        // Jugador
         Texture homeroImagen = new Texture(Gdx.files.internal("homero.jpg"));
         homero = new Jugador(homeroImagen);
         homero.crear();
 
-        Texture cervezaImagen = new Texture(Gdx.files.internal("cerveza.png"));
-        float x = 800/2f - cervezaImagen.getWidth()/2f;
-        float y = 480;          
-        float speed = 200f;          
-        cerveza = new Cerveza(cervezaImagen, x, y, speed);
-        cerveza.crear();
-
-        
-        
-    }
-	
-
-
-    @Override
-    public void render () {
-        
-        ScreenUtils.clear(0, 0, 0.2f, 1); //limpia la pantalla con color azul obscuro.
-        float dt = Gdx.graphics.getDeltaTime(); // AÑADE (calcular delta time):
-
-        //actualizar matrices de la cámara
-        camera.update();
-        viewport.apply();
-        //actualizar 
-        batch.setProjectionMatrix(camera.combined);
-        
-        
-        homero.actualizar(dt);
-        cerveza.actualizarMovimiento(homero);   // ← aquí se mueven, colisionan y respawnean TODAS
-
-        
-
-        batch.begin();
-        homero.dibujar(batch);
-        cerveza.draw(batch);
-        //dibujar textos
-        font.draw(batch, "Puntos: " + homero.getPuntos(), 10, 470);
-        font.draw(batch, "Vidas : " + homero.getVidas(), 720, 475);
-        batch.end();
-        /*
-        if (!tarro.estaHerido()) {
-            tarro.actualizarMovimiento();// movimiento del tarro desde teclado    
-            lluvia.actualizarMovimiento(tarro);	  // caida de la lluvia 
-        }
-        viewport.apply();
-
-        batch.setProjectionMatrix(camera.combined);
-        tarro.dibujar(batch);
-        lluvia.actualizarDibujoLluvia(batch);
-
-        batch.end();	
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin(); */
-
+        // Agua
+        Texture aguaImagen = new Texture(Gdx.files.internal("agua.jpg"));
+        //agua = new Agua(aguaImagen, 0, 0, 120f); // velocidad más lenta
        
 
-    }
-	
-    @Override
-    public void dispose () {
-        batch.dispose();
-        font.dispose();
+        // Cerveza
+        Texture cervezaImagen = new Texture(Gdx.files.internal("cerveza.png"));
+        //cerveza = new Cerveza(cervezaImagen, 0, 0, 100f); // velocidad más lenta
         
-        if (homero != null) homero.dispose();
-        if (cerveza != null) cerveza.dispose();
-
+        cervezaSound = Gdx.audio.newSound(Gdx.files.internal("yuju.mp3"));
+        cerveza = new Cerveza(cervezaImagen, 0, 0, 100f, cervezaSound);
+        cerveza.crear();
+        aguaSound = Gdx.audio.newSound(Gdx.files.internal("oh.mp3"));
+        agua = new Agua(aguaImagen, 0, 0, 120f, aguaSound);
+        agua.crear();
+        
+        Texture donaImagen = new Texture(Gdx.files.internal("dona.png"));
+        donaSound = Gdx.audio.newSound(Gdx.files.internal("yuju.mp3"));
+        dona = new Dona(donaImagen, 0, 0, 100f, donaSound);
+        dona.crear();
+        fondo = new Texture(Gdx.files.internal("casa.png"));
+        
     }
-    
+
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        camera.update();
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
+
+        // Actualizar posiciones
+        homero.actualizar(delta);
+        
+        if(homero.getPuntos() >= 80) factorVelocidad = 3f;
+        else if(homero.getPuntos() >= 60) factorVelocidad = 2.5f;
+        else if(homero.getPuntos() >= 40) factorVelocidad = 2f;
+        else if(homero.getPuntos() >= 20) factorVelocidad = 1.5f;
+        else factorVelocidad = 1f;
+        cerveza.actualizarMovimiento(homero,factorVelocidad);
+        agua.actualizarMovimiento(homero,factorVelocidad);
+        dona.actualizarMovimiento(homero, factorVelocidad);
+
+        // Dibujar
+        batch.begin();
+        batch.draw(fondo, 0, 0, 800, 480);
+        homero.dibujar(batch);
+        cerveza.draw(batch);
+        agua.draw(batch);
+        dona.draw(batch);
+        font.draw(batch, "Puntos: " + homero.getPuntos(), 10, 470);
+        font.draw(batch, "Vidas: " + homero.getVidas(), 720, 475);
+        font.draw(batch, "Puntos: " + homero.getPuntos(), 10, 470);
+        font.draw(batch, "Vidas: " + homero.getVidas(), 720, 475);
+
+        batch.end();
+
+        // Game Over
+        if (homero.getVidas() <= 0) {
+            game.setScreen(new GameOverScreen(game, homero.getPuntos()));
+        }
+    }
+
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
+
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override
+    public void dispose() {
+        batch.dispose();
+        font.dispose();
+        homero.dispose();
+        cerveza.dispose();
+        agua.dispose();
+        cervezaSound.dispose();
+        aguaSound.dispose();
+        dona.dispose();
+        donaSound.dispose();
+        fondo.dispose();
+
+    }
 }
+
 

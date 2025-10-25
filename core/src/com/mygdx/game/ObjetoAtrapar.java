@@ -24,8 +24,7 @@ public abstract class ObjetoAtrapar {
         this.speed = speed;
         this.rect = new Rectangle(x, y, SIZE, SIZE);
     }
-    public ObjetoAtrapar() {
-}
+    //public ObjetoAtrapar() {}
 
 
     public void update(float dt) { rect.y -= speed * dt; } //mueve el objeto
@@ -46,4 +45,7 @@ public abstract class ObjetoAtrapar {
     public Rectangle getArea() { return rect; }
 
     public void dispose() { texture.dispose(); }
+    
+    public abstract void onCatch(Jugador jugador);
+    public abstract boolean isHarmful();
 }

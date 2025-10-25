@@ -9,6 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("grupo25");
-		new Lwjgl3Application(new Ejemplo(), config);
+		//new Lwjgl3Application(new Ejemplo(), config);
+                new Lwjgl3Application(new Pantalla(), config);
 	}
 }

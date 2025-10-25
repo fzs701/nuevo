@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  *
@@ -22,71 +23,97 @@ public class Cerveza extends ObjetoAtrapar {
     private Array<Float> cervezasSpeed;     // velocidad individual
     private long lastSpawnTime;             // tiempo para crear nuevas
     private Texture texturaCerveza;         // textura compartida
+    private final float spawnIntervalSeconds = 0.8f; 
+    private final int MAX_DROPS = 6; 
+    private Sound cervezaSound;
 
-    public Cerveza(Texture tex, float x, float y, float speed) {
+    
+    public Cerveza(Texture tex, float x, float y, float speed, Sound cervezaSound) {
         super(tex, x, y, speed);
-        this.texturaCerveza = tex;
+        this.cervezaSound = cervezaSound;
+        //this.texturaCerveza = tex;
     }
 
-    /** Inicializa las listas y genera la primera cerveza */
+    // Inicializa las listas y genera la primera cerveza 
     public void crear() {
         cervezasPos = new Array<>();
         cervezasSpeed = new Array<>();
         crearCerveza();
     }
 
-    /** Crea una nueva cerveza en una posición aleatoria arriba de la pantalla */
+    // Crea una nueva cerveza en una posición aleatoria 
     private void crearCerveza() {
+        if (cervezasPos.size >= MAX_DROPS) return;
         Rectangle cerveza = new Rectangle();
-        cerveza.x = MathUtils.random(0, 800 - 64);
+        cerveza.x = MathUtils.random(0, 800 - SIZE);
         cerveza.y = 480 + MathUtils.random(0, 200);
-        cerveza.width = 64;
-        cerveza.height = 64;
+        cerveza.width = SIZE;
+        cerveza.height = SIZE;
 
         cervezasPos.add(cerveza);
-        cervezasSpeed.add(MathUtils.random(280f, 400f)); // velocidad al caer
+        cervezasSpeed.add(MathUtils.random(140f, 160f)); // velocidad al caer
         lastSpawnTime = TimeUtils.nanoTime();
     }
 
-    /** Actualiza la caída de las cervezas y la detección con Homero */
-    public void actualizarMovimiento(Jugador homero) {
+    //Actualiza la caída de las cervezas y la detección con Homero 
+    public void actualizarMovimiento(Jugador homero,  float factorVelocidad) {
         // cada medio segundo se crea una cerveza nueva
-        if (TimeUtils.nanoTime() - lastSpawnTime > 500_000_000L) crearCerveza();
+        if ((TimeUtils.nanoTime() - lastSpawnTime)  / 1_000_000_000.0f > spawnIntervalSeconds){
+            
+            if (MathUtils.random() < 0.9f) crearCerveza(); // 90% de probabilidad de spawn
+            else lastSpawnTime = TimeUtils.nanoTime();
+        }
 
         for (int i = 0; i < cervezasPos.size; i++) {
             Rectangle c = cervezasPos.get(i);
-            float speed = cervezasSpeed.get(i);
+            float velocidadCerveza = cervezasSpeed.get(i);
 
             // caída
-            c.y -= speed * Gdx.graphics.getDeltaTime();
+            c.y -= velocidadCerveza * Gdx.graphics.getDeltaTime() * factorVelocidad;
 
             // si toca el suelo → reaparece arriba
             if (c.y + c.height < 0) {
-                c.x = MathUtils.random(0, 800 - 64);
+                c.x = MathUtils.random(0, 800 - SIZE);
                 c.y = 480 + MathUtils.random(0, 200);
                 continue;
             }
 
-            // si choca con Homero → sumar puntos y reaparecer
-            if (c.overlaps(homero.getArea())) {
-                homero.sumarPuntos(10);
-                c.x = MathUtils.random(0, 800 - 64);
-                c.y = 480 + MathUtils.random(0, 200);
+            // si choca con Homero, sumar puntos y reaparecer
+            if (c.overlaps(homero.getArea())){
+                onCatch(homero);
+                //c.x = MathUtils.random(0, 800 - SIZE);
+                //c.y = 480 + MathUtils.random(0, 200);
+                cervezasPos.removeIndex(i);
+                cervezasSpeed.removeIndex(i);
             }
+                
+                /*homero.sumarPuntos(10);
+                c.x = MathUtils.random(0, 800 - 64);
+                c.y = 480 + MathUtils.random(0, 200);*/
+            
         }
     }
 
-    /** Dibuja todas las cervezas activas */
+    //cervezas activas 
     @Override
     public void draw(SpriteBatch batch) {
         for (Rectangle c : cervezasPos) {
-            batch.draw(texturaCerveza, c.x, c.y, c.width, c.height);
+            batch.draw(texture, c.x, c.y, c.width, c.height);
         }
     }
+   @Override
+    public void onCatch(Jugador jugador){
+        jugador.sumarPuntos(1);
+        if (cervezaSound != null) cervezaSound.play();
+    }
+    
+    @Override
+    public boolean isHarmful(){ return false ;}
 
+    
+    //para que se borra!!!
     @Override
     public void update(float dt) {
-        // No se usa directamente: las cervezas se actualizan en actualizarMovimiento()
     }
 
     @Override
@@ -106,7 +133,7 @@ public class Cerveza extends ObjetoAtrapar {
 
     @Override
     public void dispose() {
-        texturaCerveza.dispose();
+        texture.dispose();
     }
 }
 

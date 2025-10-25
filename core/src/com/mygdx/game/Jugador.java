@@ -26,6 +26,8 @@ public class Jugador {
     private int puntos = 0;
     private boolean herido = false;
     private float tHerido = 0f;
+    private boolean heridoTemporal = false;
+    private float tHeridoTemporal = 0f;
     
     public Jugador(Texture tex) { this.texture = tex; }
 
@@ -43,11 +45,15 @@ public class Jugador {
             tHerido -=dt;
             if(tHerido <= 0f) herido = false;
         }
+        if (heridoTemporal){
+            tHeridoTemporal -= dt;
+            if(tHeridoTemporal <= 0f) heridoTemporal = false;
+        }
     }
 
     public void dibujar(SpriteBatch batch) {
-        float shake = herido ? MathUtils.random(-3, 3) : 0f;
-        batch.draw(texture, area.x, area.y, area.width, area.height);
+        float shake = (herido || heridoTemporal) ? MathUtils.random(-3, 3) : 0f;
+        batch.draw(texture, area.x + shake, area.y, area.width, area.height);
     }
     
     public void sumarPuntos(int pp) { puntos += pp; }
@@ -55,6 +61,11 @@ public class Jugador {
         vidas--; 
         herido = true; 
         tHerido = 0.4f; 
+    }
+    
+    public void vibrarTemporal(){
+        heridoTemporal = true;
+        tHeridoTemporal = 0.2f;
     }
     
     public int getVidas() { return vidas; }
