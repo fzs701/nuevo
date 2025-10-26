@@ -56,6 +56,9 @@ public class Jugador {
         batch.draw(texture, area.x + shake, area.y, area.width, area.height);
     }
     
+    
+
+    
     public void sumarPuntos(int pp) { puntos += pp; }
     public void dañar() { 
         vidas--; 

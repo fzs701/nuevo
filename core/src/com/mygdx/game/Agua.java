@@ -22,19 +22,20 @@ public class Agua extends ObjetoAtrapar {
     private long lastSpawnTime;
     private final float spawnIntervalSeconds = 1.2f; // menos frecuente que cerveza
     private final int MAX_DROPS = 4;
-    private Sound aguaSound;
+    private final Sound aguaSound;
     
     public Agua(Texture tex, float x, float y, float speed, Sound aguaSound){
         super(tex,x,y,speed);
         this.aguaSound = aguaSound;
     }
+    // Inicializa las listas y genera la primera agua
     public void crear() {
         aguasPos = new Array<>();
         aguasSpeed = new Array<>();
         crearAgua();
         
     }
-    
+    // Crea un agua en una posición aleatoria
     private void crearAgua(){
         if (aguasPos.size >= MAX_DROPS) return;
         Rectangle a = new Rectangle();
@@ -43,10 +44,11 @@ public class Agua extends ObjetoAtrapar {
         a.width = SIZE; a.height = SIZE;
 
         aguasPos.add(a);
-        aguasSpeed.add(MathUtils.random(140, 160f));
+        aguasSpeed.add(MathUtils.random(140, 160f)); // velocidad al caer
         lastSpawnTime = TimeUtils.nanoTime();
     }
-    
+    //Actualiza la caída de las aguas y la detección con Homero 
+    @Override
     public void actualizarMovimiento(Jugador homero,  float factorVelocidad) {
         if ((TimeUtils.nanoTime() - lastSpawnTime)  / 1_000_000_000.0f > spawnIntervalSeconds) {
             if (MathUtils.random() < 0.8f) crearAgua();

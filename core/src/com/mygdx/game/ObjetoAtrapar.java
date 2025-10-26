@@ -24,8 +24,10 @@ public abstract class ObjetoAtrapar {
         this.speed = speed;
         this.rect = new Rectangle(x, y, SIZE, SIZE);
     }
-    //public ObjetoAtrapar() {}
-
+    
+    public void actualizarMovimiento(Jugador homero, float factorVelocidad) {
+        rect.y -= speed * factorVelocidad * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+    }
 
     public void update(float dt) { rect.y -= speed * dt; } //mueve el objeto
     

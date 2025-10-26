@@ -24,20 +24,20 @@ public class Dona extends ObjetoAtrapar {
     private Array<Float> donasSpeed;
     private long lastSpawnTime;
     private final float spawnIntervalSeconds = 8f; // menos frecuente que cerveza o agua
-    private final int MAX_DONAS = 1; // máximo 1 dona en pantalla
-    private Sound donaSound;
+    private final int MAX_DONAS = 1; 
+    private final Sound donaSound;
 
     public Dona(Texture tex, float x, float y, float speed, Sound donaSound) {
         super(tex, x, y, speed);
         this.donaSound = donaSound;
     }
-
+    // Inicializa las listas y genera la primera dona
     public void crear() {
         donasPos = new Array<>();
         donasSpeed = new Array<>();
         crearDona();
     }
-
+    // Crea un agua en una posición aleatoria
     private void crearDona() {
         if (donasPos.size >= MAX_DONAS) return; // no crear si ya hay una
         Rectangle d = new Rectangle();
@@ -47,10 +47,11 @@ public class Dona extends ObjetoAtrapar {
         d.height = SIZE;
 
         donasPos.add(d);
-        donasSpeed.add(MathUtils.random(150f, 180f));
+        donasSpeed.add(MathUtils.random(150f, 180f)); // velocidad al caer
         lastSpawnTime = TimeUtils.nanoTime();
     }
-
+    //Actualiza la caída de las donas y la detección con Homero 
+    @Override
     public void actualizarMovimiento(Jugador homero, float factorVelocidad) {
         if ((TimeUtils.nanoTime() - lastSpawnTime) / 1_000_000_000.0f > spawnIntervalSeconds) {
             crearDona();
@@ -67,7 +68,7 @@ public class Dona extends ObjetoAtrapar {
                 donasSpeed.removeIndex(i);
                 continue;
             }
-
+            // si choca con homero, suma puntos y reaparece
             if (d.overlaps(homero.getArea())) {
                 onCatch(homero);
                 donasPos.removeIndex(i);
@@ -76,7 +77,7 @@ public class Dona extends ObjetoAtrapar {
         }
     }
 
-
+    //donas activas 
     @Override
     public void draw(SpriteBatch batch) {
         for (Rectangle d : donasPos) {
@@ -120,5 +121,6 @@ public class Dona extends ObjetoAtrapar {
     public void dispose() {
         texture.dispose();
     }
+    
 }
 

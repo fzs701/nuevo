@@ -36,8 +36,8 @@ public class Imagen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        splashTexture = new Texture(Gdx.files.internal("the-simpsons.jpg")); // tu imagen
-        splashSound = Gdx.audio.newSound(Gdx.files.internal("intro.mp3")); // tu sonido
+        splashTexture = new Texture(Gdx.files.internal("the-simpsons.jpg")); 
+        splashSound = Gdx.audio.newSound(Gdx.files.internal("intro.mp3"));
         splashSound.play();
         font = new BitmapFont();
         font.setColor(Color.BLACK);
@@ -46,18 +46,14 @@ public class Imagen implements Screen {
     @Override
     public void render(float delta) {
         
-
-        // Fondo negro y limpiar pantalla
         ScreenUtils.clear(0, 0, 0, 1);
 
         batch.begin();
-
-        // Dibujar imagen a pantalla completa
+        
         batch.draw(splashTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         font.draw(batch, "Presione ENTER para continuar", 200, 50);
         batch.end();
 
-        // Cambiar de pantalla cuando termine el tiempo
         if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
             game.setScreen(new Ejemplo(game));
         }

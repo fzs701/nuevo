@@ -22,16 +22,14 @@ public class Cerveza extends ObjetoAtrapar {
     private Array<Rectangle> cervezasPos;   // posiciones de cada cerveza
     private Array<Float> cervezasSpeed;     // velocidad individual
     private long lastSpawnTime;             // tiempo para crear nuevas
-    private Texture texturaCerveza;         // textura compartida
     private final float spawnIntervalSeconds = 0.8f; 
     private final int MAX_DROPS = 6; 
-    private Sound cervezaSound;
+    private final Sound cervezaSound;
 
     
     public Cerveza(Texture tex, float x, float y, float speed, Sound cervezaSound) {
         super(tex, x, y, speed);
         this.cervezaSound = cervezaSound;
-        //this.texturaCerveza = tex;
     }
 
     // Inicializa las listas y genera la primera cerveza 
@@ -56,6 +54,7 @@ public class Cerveza extends ObjetoAtrapar {
     }
 
     //Actualiza la caída de las cervezas y la detección con Homero 
+    @Override
     public void actualizarMovimiento(Jugador homero,  float factorVelocidad) {
         // cada medio segundo se crea una cerveza nueva
         if ((TimeUtils.nanoTime() - lastSpawnTime)  / 1_000_000_000.0f > spawnIntervalSeconds){
@@ -71,26 +70,19 @@ public class Cerveza extends ObjetoAtrapar {
             // caída
             c.y -= velocidadCerveza * Gdx.graphics.getDeltaTime() * factorVelocidad;
 
-            // si toca el suelo → reaparece arriba
+            // si toca el suelo, reaparece arriba
             if (c.y + c.height < 0) {
                 c.x = MathUtils.random(0, 800 - SIZE);
                 c.y = 480 + MathUtils.random(0, 200);
                 continue;
             }
 
-            // si choca con Homero, sumar puntos y reaparecer
+            // si choca con homero, suma puntos y reaparece
             if (c.overlaps(homero.getArea())){
                 onCatch(homero);
-                //c.x = MathUtils.random(0, 800 - SIZE);
-                //c.y = 480 + MathUtils.random(0, 200);
                 cervezasPos.removeIndex(i);
                 cervezasSpeed.removeIndex(i);
             }
-                
-                /*homero.sumarPuntos(10);
-                c.x = MathUtils.random(0, 800 - 64);
-                c.y = 480 + MathUtils.random(0, 200);*/
-            
         }
     }
 
@@ -111,7 +103,6 @@ public class Cerveza extends ObjetoAtrapar {
     public boolean isHarmful(){ return false ;}
 
     
-    //para que se borra!!!
     @Override
     public void update(float dt) {
     }
@@ -135,6 +126,7 @@ public class Cerveza extends ObjetoAtrapar {
     public void dispose() {
         texture.dispose();
     }
+    
 }
 
 
