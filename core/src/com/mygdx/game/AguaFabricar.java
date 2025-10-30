@@ -9,8 +9,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AguaFabricar implements Fabricar {
-    private Texture tex;
-    private Sound sonido;
+    private final Texture tex;
+    private final Sound sonido;
     private Agua agua;
 
     public AguaFabricar(Texture tex, Sound sonido) {

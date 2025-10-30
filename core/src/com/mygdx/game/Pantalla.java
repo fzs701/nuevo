@@ -14,7 +14,7 @@ import com.badlogic.gdx.Game;
 public class Pantalla extends Game {
     @Override
     public void create() {
-        setScreen(new Imagen(this));
+        setScreen(new Imagen(this)); //mostrar pantalla introductoria
     }
 
     

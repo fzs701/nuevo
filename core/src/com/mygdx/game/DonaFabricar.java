@@ -14,8 +14,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 
 public class DonaFabricar implements Fabricar {
-    private Texture tex;
-    private Sound sonido;
+    private final Texture tex;
+    private final Sound sonido;
     private Dona dona;
 
     public DonaFabricar(Texture tex, Sound sonido) {

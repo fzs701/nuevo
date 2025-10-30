@@ -96,9 +96,7 @@ public class Dona extends ObjetoAtrapar {
         return false;
     }
 
-    @Override
-    public void update(float dt) { }
-
+    
     @Override
     public boolean fueraDePantalla() {
         for (Rectangle d : donasPos) {

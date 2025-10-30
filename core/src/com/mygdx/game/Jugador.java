@@ -18,12 +18,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Jugador {
-    private final Texture texture;
-    private final Rectangle area = new Rectangle();
+    private final Texture texture; //imagen homero
+    private final Rectangle area = new Rectangle(); //posicion y tamaño
     private final float velx = 400f;
     
     private int vidas = 3;
     private int puntos = 0;
+    //variables herido 
     private boolean herido = false;
     private float tHerido = 0f;
     private boolean heridoTemporal = false;
@@ -31,7 +32,7 @@ public class Jugador {
     
     public Jugador(Texture tex) { this.texture = tex; }
 
-    public void crear() {
+    public void crear() {  //jugador en centro
         area.set(800/2f - 32, 20, 64, 64);
 
     }
@@ -51,12 +52,10 @@ public class Jugador {
         }
     }
 
-    public void dibujar(SpriteBatch batch) {
+    public void dibujar(SpriteBatch batch) { //se mueve si esta herido
         float shake = (herido || heridoTemporal) ? MathUtils.random(-3, 3) : 0f;
         batch.draw(texture, area.x + shake, area.y, area.width, area.height);
     }
-    
-    
 
     
     public void sumarPuntos(int pp) { puntos += pp; }
@@ -70,7 +69,7 @@ public class Jugador {
         heridoTemporal = true;
         tHeridoTemporal = 0.2f;
     }
-    
+    //getters
     public int getVidas() { return vidas; }
     public int getPuntos() { return puntos; }
     public boolean estaHerido() { return herido; }

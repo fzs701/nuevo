@@ -29,7 +29,7 @@ public abstract class ObjetoAtrapar {
         rect.y -= speed * factorVelocidad * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
     }
 
-    public void update(float dt) { rect.y -= speed * dt; } //mueve el objeto
+    
     
     //dibuja la imagen en posicion actual
     public void draw(SpriteBatch batch) { 
@@ -48,6 +48,6 @@ public abstract class ObjetoAtrapar {
 
     public void dispose() { texture.dispose(); }
     
-    public abstract void onCatch(Jugador jugador);
+    public abstract void onCatch(Jugador jugador); //atrapar objeto
     public abstract boolean isHarmful();
 }

@@ -93,7 +93,7 @@ public class Cerveza extends ObjetoAtrapar {
             batch.draw(texture, c.x, c.y, c.width, c.height);
         }
     }
-   @Override
+    @Override
     public void onCatch(Jugador jugador){
         jugador.sumarPuntos(1);
         if (cervezaSound != null) cervezaSound.play();
@@ -103,9 +103,7 @@ public class Cerveza extends ObjetoAtrapar {
     public boolean isHarmful(){ return false ;}
 
     
-    @Override
-    public void update(float dt) {
-    }
+    
 
     @Override
     public boolean fueraDePantalla() {

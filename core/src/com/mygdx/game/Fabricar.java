@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  * @author usuario
  */
-public interface Fabricar {
-    ObjetoAtrapar crear(float x, float y, float factorVelocidad);
-    void actualizarMovimiento(Jugador homero, float factorVelocidad);
+public interface Fabricar {          //crea y controla los objetos que caen en el juego, se pueden agregar mas si uno quiere
+    
+    ObjetoAtrapar crear(float x, float y, float factorVelocidad);       //crea objeto 
+    void actualizarMovimiento(Jugador homero, float factorVelocidad);   //actualiza movimiento
     void draw(SpriteBatch batch);
     void dispose();
 }

@@ -13,17 +13,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class CervezaFabricar implements Fabricar {
-    private Texture tex;
-    private Sound sonido;
+public class CervezaFabricar implements Fabricar { 
+    private final Texture tex;
+    private final Sound sonido;
     private Cerveza cerveza;
 
-    public CervezaFabricar(Texture tex, Sound sonido) {
+    public CervezaFabricar(Texture tex, Sound sonido) { //constructor con sonido y textura ya cargados
         this.tex = tex;
         this.sonido = sonido;
     }
 
-    @Override
+    @Override //crear cerveza
     public Cerveza crear(float x, float y, float factorVelocidad) {
         cerveza = new Cerveza(tex, x, y, 100f, sonido);
         cerveza.crear();

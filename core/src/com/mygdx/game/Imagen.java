@@ -21,19 +21,17 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Imagen implements Screen {
 
-    private final Pantalla game;
+    private final Pantalla game;       //controlador principal
     private SpriteBatch batch;
-    private Texture splashTexture;
+    private Texture splashTexture;     //imagen de fondo
     private Sound splashSound;
-    private float timer = 0f;
     private BitmapFont font;
-    private final float DURATION = 4f; // dura 3 segundos
 
     public Imagen(Pantalla game) {
         this.game = game;
     }
 
-    @Override
+    @Override // se ejecuta para mostrar pantalla
     public void show() {
         batch = new SpriteBatch();
         splashTexture = new Texture(Gdx.files.internal("the-simpsons.jpg")); 
@@ -46,12 +44,12 @@ public class Imagen implements Screen {
     @Override
     public void render(float delta) {
         
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0, 0, 0, 1);      //limpiar pantalla
 
         batch.begin();
         
         batch.draw(splashTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        font.draw(batch, "Presione ENTER para continuar", 200, 50);
+        font.draw(batch, "Presione ENTER para continuar", 200, 50);       //texto para continuar
         batch.end();
 
         if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
