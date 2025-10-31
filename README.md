@@ -13,11 +13,6 @@ El objetivo es conseguir la mayor cantidad de puntos posibles antes de quedarse 
 El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e interfaces) e incluye **pantallas de inicio, menú, juego principal y Game Over**.
 
 
-
----
-
-
-
 \## Requisitos previos
 
 \- Java JDK 17 o superior (recomendado: JDK 21)  
@@ -27,11 +22,6 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 \- Gradle o LibGDX configurado (ya incluido en el proyecto descargado)  
 
 \- Biblioteca LibGDX instalada o referenciada correctamente  
-
-
-
----
-
 
 
 \## Instrucciones para descargar y ejecutar el proyecto en NetBeans
@@ -48,9 +38,6 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 
 
----
-
-
 
 \### 2️⃣ Abrir el proyecto en NetBeans
 
@@ -64,20 +51,7 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 5\. Haz clic en **Abrir proyecto**.  
 
-
-
 > ⚠️ Asegúrate de abrir el proyecto Gradle completo, no solo la carpeta `/core`.
-
-
-
----
-
-
-
-
-
----
-
 
 
 \## 4️⃣ Ejecutar el juego
@@ -91,11 +65,6 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 
 > Si todo está correcto, se abrirá una ventana del juego con la pantalla de presentación de \*Los Simpson\*.
-
-
-
----
-
 
 
 \## 🎮 Instrucciones de juego
@@ -120,7 +89,6 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 &nbsp; - Desde la pantalla Game Over, presiona Enter para volver al menú.
 
----
 
 \##Notas importantes
 
