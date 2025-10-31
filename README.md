@@ -230,27 +230,6 @@ El juego incrementa su dificultad conforme el jugador avanza en puntaje:
 
 ---
 
-
-
-\## 📈 Flujo del juego
-
-
-
-```mermaid
-
-graph TD
-
-&nbsp; A\[Inicio] --> B\[Imagen.java (Intro)]
-
-&nbsp; B --> C\[Menu.java]
-
-&nbsp; C --> D\[Ejemplo.java (Juego Principal)]
-
-&nbsp; D -->|Vidas = 0| E\[GameOverScreen.java]
-
-&nbsp; E -->|Enter| C
-
-
 \##Notas importantes
 
 No modifiques los nombres de las clases o paquetes (com.mygdx.game), ya que están referenciados en el código.
