@@ -38,7 +38,7 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 
 
-\### 1️⃣ Descargar el proyecto
+\## 1️⃣ Descargar el proyecto
 
 \- Descarga el archivo ZIP del repositorio o desde tu entrega.  
 
@@ -80,7 +80,7 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 
 
-\### 4️⃣ Ejecutar el juego
+\## 4️⃣ Ejecutar el juego
 
 1\. En el panel de proyectos, abre la carpeta \*\*`desktop/src/main/java/com/mygdx/game`\*\*.  
 
