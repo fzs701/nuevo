@@ -4,67 +4,74 @@
  */
 package com.mygdx.game;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.ScreenUtils;
 
-public class GameOverScreen implements Screen {
+public class GameOverScreen  extends PantallaBase {
 
-    private final Pantalla game;
     private final int puntos;
-    private SpriteBatch batch;
     private BitmapFont font;
     private Texture fondo;
     private Sound sonido;
 
     public GameOverScreen(Pantalla game, int puntos) {
-        this.game = game;
+        super(game);
         this.puntos = puntos;
     }
 
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        fondo = new Texture(Gdx.files.internal("final.jpg")); 
-        sonido = Gdx.audio.newSound(Gdx.files.internal("final.mp3"));
+        Recursos r = Recursos.getInstancia();
+        fondo = r.fondoGameOver;
+        sonido = r.sonidoFinal;
+
         sonido.play();
+
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
     }
-
     @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    protected void actualizar(float delta) {
 
-        batch.begin();
-        batch.draw(fondo, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        font.setColor(0,0,0,1);
-        font.draw(batch, "GAME OVER", 50, 350);
-        font.draw(batch, "Puntos: " + puntos, 50, 300);
-        font.draw(batch, "Presiona ENTER para volver al menú", 50, 250);
-        batch.end();
-
+        // Volver al menú con ENTER
         if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
             sonido.stop();
-            sonido.dispose();
             game.setScreen(new Imagen(game));
-            //game.setScreen(new Menu(game));
         }
     }
 
+    @Override
+    protected void dibujar(float delta) {
+
+        ScreenUtils.clear(0.1f, 0, 0, 1);
+
+        batch.begin();
+
+        batch.draw(fondo, 0, 0, 
+                   Gdx.graphics.getWidth(), 
+                   Gdx.graphics.getHeight());
+
+        font.draw(batch, "GAME OVER", 50, 350);
+        font.draw(batch, "Puntos: " + puntos, 50, 300);
+        font.draw(batch, "Presiona ENTER para volver al menú", 50, 250);
+
+        batch.end();
+    }
+
+
+    
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
     @Override
     public void dispose() {
-        batch.dispose();
+        super.dispose();
         font.dispose();
-        fondo.dispose();
     }
 }

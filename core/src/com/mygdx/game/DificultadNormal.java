@@ -8,19 +8,14 @@ package com.mygdx.game;
  *
  * @author usuario
  */
-
-import com.badlogic.gdx.Game;
-
-public class Pantalla extends Game {
+public class DificultadNormal implements Dificultad {
     @Override
-    public void create() {
-        setScreen(new Imagen(this)); //mostrar pantalla introductoria
+    public float factorVelocidad(int puntos) {
+        if (puntos >= 80) return 3f;
+        if (puntos >= 60) return 2.5f;
+        if (puntos >= 40) return 2f;
+        if (puntos >= 20) return 1.5f;
+        return 1f;
     }
-    @Override
-    public void dispose() {
-        Recursos.getInstancia().dispose();
-    }
-
-
     
 }

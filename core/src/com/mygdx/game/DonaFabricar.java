@@ -24,7 +24,7 @@ public class DonaFabricar implements Fabricar {
     }
 
     @Override
-    public Dona crear(float x, float y, float factorVelocidad) {
+    public ObjetoAtrapar crear(float x, float y, float factorVelocidad) {
         dona = new Dona(tex, x, y, 100f, sonido);
         dona.crear();
         return dona;

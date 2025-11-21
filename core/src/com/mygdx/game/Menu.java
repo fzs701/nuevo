@@ -10,38 +10,40 @@ package com.mygdx.game;
  */
 
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Input.Keys;
 
-public class Menu implements Screen {
+public class Menu extends PantallaBase {
 
-    private final Pantalla game;
-     private SpriteBatch batch;
     private BitmapFont font;
 
     
     public Menu(Pantalla game) {
-        this.game = game;
+        super(game);
     }
     @Override
     public void show() {
-        batch = new SpriteBatch();
         font = new BitmapFont();
     }
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        
+     @Override
+    protected void actualizar(float delta) {
+        // Cambiar de pantalla al apretar ENTER
         if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
             game.setScreen(new Ejemplo(game));
         }
     }
+    @Override
+    protected void dibujar(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.begin();
+        font.draw(batch, "PRESIONE ENTER PARA COMENZAR", 200, 240);
+        batch.end();
+    }
+    
     
 
     @Override public void resize(int width, int height) {}
@@ -49,7 +51,7 @@ public class Menu implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void dispose() {
-        batch.dispose();
+        super.dispose();
         font.dispose();
     }
 }

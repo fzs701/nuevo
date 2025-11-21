@@ -1,44 +1,39 @@
 package com.mygdx.game;
 
 //import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.Screen;
 
 
 
 
-public class Ejemplo implements Screen {
+
+public class Ejemplo extends PantallaBase {
     private OrthographicCamera camera;
-    private SpriteBatch batch;
     private BitmapFont font;
     private Viewport viewport;
-    private Sound cervezaSound, aguaSound;
+    private OrdenAtrapar gestor;
+    private Dificultad dificultad;
+    private NivelFactory nivelFactory;
+
+
     
     
-    
-    private Sound donaSound;
     private float factorVelocidad = 1f;
 
 
 
     private Jugador homero;
-    private Fabricar cerveza;
-    private Fabricar dona;
-    private Fabricar agua;
     private Texture fondo;
 
-    private final Pantalla game;
 
     public Ejemplo(Pantalla game) {
-        this.game = game;
+        super(game);
     }
 
     @Override
@@ -50,80 +45,70 @@ public class Ejemplo implements Screen {
         viewport = new FitViewport(800, 480, camera);
         camera.position.set(400, 240, 0);
         camera.update();
-        batch = new SpriteBatch();
+        
+        gestor = new OrdenAtrapar();
+        Recursos r = Recursos.getInstancia();
+        dificultad = new DificultadNormal();
+        nivelFactory = new NivelBasicoFactory();
+
 
         // Jugador
-        Texture homeroImagen = new Texture(Gdx.files.internal("homero2.png"));
+        Texture homeroImagen = Recursos.getInstancia().homero2;
         homeroImagen.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         
         homero = new Jugador(homeroImagen);
         homero.crear();
-
-        // Agua
-        Texture aguaImagen = new Texture(Gdx.files.internal("agua2.png"));
-        aguaSound = Gdx.audio.newSound(Gdx.files.internal("oh.mp3"));
-        agua = new AguaFabricar(aguaImagen, aguaSound);
-        agua.crear(0, 0, 1f);    
         
-        // Cerveza
-        Texture cervezaImagen = new Texture(Gdx.files.internal("cerveza.png"));
-        cervezaSound = Gdx.audio.newSound(Gdx.files.internal("yuju.mp3"));
-        cerveza = new CervezaFabricar(cervezaImagen, cervezaSound);
-        cerveza.crear(0, 0, 1f); 
-        
-        //Dona
-        Texture donaImagen = new Texture(Gdx.files.internal("dona2.png"));
-        donaSound = Gdx.audio.newSound(Gdx.files.internal("rosca.mp3"));
-        dona = new DonaFabricar(donaImagen, donaSound);
-        dona.crear(0, 0, 1f);    
+        // Crear fabricadores y agregar a gestor
+        gestor.agregar(nivelFactory.crearFabricadorAgua().crear(0, 480, 1f));
+        gestor.agregar(nivelFactory.crearFabricadorCerveza().crear(0, 480, 1f));
+        gestor.agregar(nivelFactory.crearFabricadorDona().crear(0, 480, 1f));
 
-        fondo = new Texture(Gdx.files.internal("casa.png"));
+        // Fondo
+        fondo = r.fondoCasa;
         fondo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+
     }
 
     @Override
-    public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1); //limpiar pantalla
+    protected void actualizar(float delta) {
 
         camera.update();
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
 
-        // Actualizar posiciones
+        // Actualizar jugador
         homero.actualizar(delta);
-        
-        //cambiamos las velocidades con ciertos puntajes obtenidos
-        if(homero.getPuntos() >= 80) factorVelocidad = 3f;
-        else if(homero.getPuntos() >= 60) factorVelocidad = 2.5f;
-        else if(homero.getPuntos() >= 40) factorVelocidad = 2f;
-        else if(homero.getPuntos() >= 20) factorVelocidad = 1.5f;
-        else factorVelocidad = 1f;
-        
-        //actualizamos moviemientos 
-        cerveza.actualizarMovimiento(homero,factorVelocidad);
-        agua.actualizarMovimiento(homero,factorVelocidad);
-        dona.actualizarMovimiento(homero, factorVelocidad);
 
-        // Dibujar
-        batch.begin();
-        batch.draw(fondo, 0, 0, 800, 580);
-        
-        homero.dibujar(batch);
-        cerveza.draw(batch);
-        agua.draw(batch);
-        dona.draw(batch);
-        
-        font.draw(batch, "Puntos: " + homero.getPuntos(), 10, 470);
-        font.draw(batch, "Vidas: " + homero.getVidas(), 670, 475);
-        
-        batch.end();
+        // Actualizar estrategia de dificultad
+        factorVelocidad = dificultad.factorVelocidad(homero.getPuntos());
+
+        // Actualizar objetos que caen
+        gestor.actualizarTodos(homero, factorVelocidad);
 
         // Game Over
         if (homero.getVidas() <= 0) {
             game.setScreen(new GameOverScreen(game, homero.getPuntos()));
         }
-        
     }
+    @Override
+    protected void dibujar(float delta) {
+
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        batch.begin();
+        batch.draw(fondo, 0, 0, 800, 580);
+
+        homero.dibujar(batch);
+        gestor.draw(batch);
+
+        font.draw(batch, "Puntos: " + homero.getPuntos(), 10, 470);
+        font.draw(batch, "Vidas: " + homero.getVidas(), 670, 475);
+
+        batch.end();
+    }
+
 
     @Override
     public void resize(int width, int height) {
@@ -135,20 +120,14 @@ public class Ejemplo implements Screen {
     @Override public void hide() {}
     
     //liberar recursos
-    @Override 
+    @Override
     public void dispose() {
-        batch.dispose();
+        super.dispose(); // Libera batch de PantallaBase
         font.dispose();
         homero.dispose();
-        cerveza.dispose();
-        agua.dispose();
-        cervezaSound.dispose();
-        aguaSound.dispose();
-        dona.dispose();
-        donaSound.dispose();
-        fondo.dispose();
-
+        gestor.dispose(); // Libera todos los objetos atrapables
     }
+
 }
 
 

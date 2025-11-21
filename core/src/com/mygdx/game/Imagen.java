@@ -9,67 +9,62 @@ package com.mygdx.game;
  * @author usuario
  */
 
-import com.badlogic.gdx.Screen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
-public class Imagen implements Screen {
+public class Imagen extends PantallaBase {
 
-    private final Pantalla game;       //controlador principal
-    private SpriteBatch batch;
-    private Texture splashTexture;     //imagen de fondo
-    private Sound splashSound;
+    private Texture splashTexture;
     private BitmapFont font;
+    private Sound splashSound;
 
     public Imagen(Pantalla game) {
-        this.game = game;
+        super(game); // PantallaBase guarda game y batch
     }
 
-    @Override // se ejecuta para mostrar pantalla
+    @Override
     public void show() {
-        batch = new SpriteBatch();
-        splashTexture = new Texture(Gdx.files.internal("the-simpsons.jpg")); 
-        splashSound = Gdx.audio.newSound(Gdx.files.internal("intro.mp3"));
+
+        //Obtener recursos desde Singleton
+        Recursos r = Recursos.getInstancia();
+
+        splashTexture = r.splashSimpsons;
+        splashSound = r.sonidoIntro;
+
         splashSound.play();
+
         font = new BitmapFont();
         font.setColor(Color.BLACK);
     }
 
     @Override
-    public void render(float delta) {
-        
-        ScreenUtils.clear(0, 0, 0, 1);      //limpiar pantalla
-
-        batch.begin();
-        
-        batch.draw(splashTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        font.draw(batch, "Presione ENTER para continuar", 200, 50);       //texto para continuar
-        batch.end();
-
+    protected void actualizar(float delta) {
         if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
             game.setScreen(new Ejemplo(game));
         }
     }
 
     @Override
-    public void resize(int width, int height) {}
-    @Override
-    public void pause() {}
-    @Override
-    public void resume() {}
-    @Override
-    public void hide() {}
+    protected void dibujar(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        batch.begin();
+        batch.draw(splashTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        font.draw(batch, "Presione ENTER para continuar", 200, 50);
+        batch.end();
+    }
+
     @Override
     public void dispose() {
-        batch.dispose();
-        splashTexture.dispose();
-        splashSound.dispose();
+        super.dispose();   // libera batch (PantallaBase)
+        font.dispose();    // recursos del propio objeto
+        // NO liberar textura ni sonido, lo hace Recursos (Singleton)
     }
 }
 

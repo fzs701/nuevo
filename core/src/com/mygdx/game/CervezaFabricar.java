@@ -24,7 +24,7 @@ public class CervezaFabricar implements Fabricar {
     }
 
     @Override //crear cerveza
-    public Cerveza crear(float x, float y, float factorVelocidad) {
+    public ObjetoAtrapar crear(float x, float y, float factorVelocidad) {
         cerveza = new Cerveza(tex, x, y, 100f, sonido);
         cerveza.crear();
         return cerveza;

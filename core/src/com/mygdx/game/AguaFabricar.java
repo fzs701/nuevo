@@ -19,7 +19,7 @@ public class AguaFabricar implements Fabricar {
     }
 
     @Override
-    public Agua crear(float x, float y, float factorVelocidad) {
+    public ObjetoAtrapar crear(float x, float y, float factorVelocidad) {
         agua = new Agua(tex, x, y, 100f, sonido);
         agua.crear();
         return agua;
