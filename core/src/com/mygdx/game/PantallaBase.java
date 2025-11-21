@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author usuario
  */
 public abstract class PantallaBase implements Screen {
-
-    protected final Pantalla game;
-    protected final SpriteBatch batch;
+    // Referencia al controlador principal del juego
+    protected final Pantalla game; 
+    protected final SpriteBatch batch; //SpriteBatch único por pantalla, usado para dibujar imágenes
 
     public PantallaBase(Pantalla game) {
         this.game = game;
