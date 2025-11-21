@@ -9,7 +9,7 @@ package com.mygdx.game;
  * @author usuario
  */
 public class NivelBasicoFactory implements NivelFactory {
-
+    
     private final Recursos r = Recursos.getInstancia();
 
     @Override

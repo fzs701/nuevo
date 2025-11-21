@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
  * @author usuario
  */
 public class Recursos {
-    
+    //gestionamos los recursos
     private static Recursos instancia;
 
     // Texturas

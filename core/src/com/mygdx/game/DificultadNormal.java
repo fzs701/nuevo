@@ -9,6 +9,7 @@ package com.mygdx.game;
  * @author usuario
  */
 public class DificultadNormal implements Dificultad {
+    //colocar segun puntos la velocidad al que debe ir 
     @Override
     public float factorVelocidad(int puntos) {
         if (puntos >= 80) return 3f;
