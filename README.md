@@ -68,6 +68,7 @@ El proyecto utiliza programación orientada a objetos (herencia, polimorfismo e 
 
 
 \## 🎮 Instrucciones de juego
+\- **Controles** 
 
 \- **Mover a Homero:** 
 
